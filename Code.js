@@ -7,7 +7,7 @@ var sheet_id = '1ERf41vn2tcpuIB_36RqroGRMgUppVsou5siEM2nWjIU';
 function main() {
   // list_calendars();
   var events = get_calendar(cal_id);
-  to_sheets(events);
+//  to_sheets(events);
 }
 
 function list_calendars() {
@@ -35,7 +35,7 @@ function get_events_today(cal) {
 
   // https://developers.google.com/apps-script/reference/calendar/calendar-event
   for each (event in events) {
-    //    Logger.log('[%s] %s', cal.getName(), event.getTitle());
+    Logger.log('[%s] %s %s',cal.getName(), event.getTitle(), event.isAllDayEvent());
     results.push(
       {
         title: event.getTitle(),
@@ -103,7 +103,7 @@ function test() {
   Logger.log(getByName('title'));
 }
 
-function cal_create() {
+function get_events_from_sheet() {
   var sheet = SpreadsheetApp.openById(sheet_id).getSheetByName("Sheet3");
   var namedRanges = sheet.getNamedRanges();
   for (var i = 0; i < namedRanges.length; i++) {
@@ -124,6 +124,20 @@ function cal_create() {
   }
   Logger.log(data_t.length + data_t);
   
+  create_events(data_t);
+}
+
+function create_events(events) {
+  // Creates an event for the moon landing and logs the ID.
+  var cal = CalendarApp.getCalendarById(cal_id);
+  for each (event in events) {
+    Logger.log(event[0] + event[2] + event[3])
+    var event = cal.createEvent(event[0], new Date(event[2]), new Date(event[3]));
+    Logger.log('Event ID: ' + event.getId());
+  }
+}
+
+function create_allday_events(events) {
   // Creates an all-day event for the moon landing and logs the ID.
   var cal = CalendarApp.getCalendarById(cal_id);
   for each (event in data_t) {
@@ -132,7 +146,4 @@ function cal_create() {
     Logger.log('Event ID: ' + event.getId());
   }
 }
-
-
-
 
